@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block body %}
+<script>
+  var _kid;
+
+async function set_data() {
+  let response = await fetch("/parser/record/random/approved/");
+  let rand_resp = await response.json();
+  let data_resp = await fetch(`/parser/record/${rand_resp.kid}`);
+  let data = await data_resp.json();
+  console.log(data)
+  document.getElementById("floor").innerHTML = `${data.floor} / ${data.max_floor}`;
+  document.getElementById("description").innerHTML = data.description;
+  document.getElementById("title-link").href = data.krisha_link;
+  document.getElementById("posted-at").innerHTML = `Размещено на крыше ${data.post_date}`;
+  document.getElementById("krisha-created-at").innerHTML = `Создано на крыше ${data.krisha_created_at}`;
+  document.getElementById("residential_complex").innerHTML = data.residential_complex;
+  document.getElementById("comment").innerHTML = data.comment;
+  document.getElementById("area").innerHTML = data.area;
+  document.getElementById("photo").src = data.photo;
+  document.getElementById("title").innerHTML = data.title;
+  _kid = data.kid
+  return data;
+}
+async function dislike() {
+  document.getElementById("main-card").style.background = "rgb(250, 160, 160)";
+  let data_resp = await fetch(`/parser/record/${_kid}/dislike/`, {
+    method: "PUT",
+  });
+  let data = await data_resp.json();
+  console.log(data)
+  await set_data()
+  document.getElementById("main-card").style.background = null;
+}
+
+set_data()
+</script>
+
+<div class="container">
+
+  <div class="row" style="margin-top: 5%; text-align: center;">
+  <h3 class="card-title">Страница просмотра отобранных квартир</h3>
+  </div>
+
+  <div class="row" style="margin-top: 10px">
+    <div class="col col-md-6 mx-auto">
+      <div class="card mb-3" id="main-card">
+        <img class="card-img-top" id="photo" src="" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title" id="title">Loading ...</h5>
+          <p><a href="" target="_blank" id="title-link">Ссылка на крышу</a></p>
+          <p class="card-text" id="description">Loading...</p>
+          <p class="card-text"><small class="text-muted">Площадь</small> <small class="text-muted" id="area">Loading...</small></p>
+          <p class="card-text"><small class="text-muted">Комментарий</small> <small class="text-muted" id="comment">Loading...</small></p>
+          <p class="card-text"><small class="text-muted">ЖК</small> <small class="text-muted" id="residential_complex">Loading...</small></p>
+          <p class="card-text"><small class="text-muted">Этаж</small> <small class="text-muted" id="floor">Loading...</small></p>
+          <p class="card-text"><small class="text-muted" id="krisha-created-at">Loading...</small></p>
+          <p class="card-text"><small class="text-muted" id="posted-at">Loading...</small></p>
+        </div>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-secondary bg-danger" onclick="dislike()">Reject</button>
+          <button type="button" class="btn btn-secondary" onclick="set_data()">Skip</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}
+

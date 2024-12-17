@@ -1,0 +1,16 @@
+services:
+  docs:
+    image: krisha_parser_local_docs
+    container_name: krisha_parser_local_docs
+    build:
+      context: krisha_parser
+      dockerfile: compose/local/docs/Dockerfile
+    env_file:
+      - .envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./krisha_parser:/app/krisha_parser:z
+    ports:
+      - '9000:9000'
+    command: /start-docs
