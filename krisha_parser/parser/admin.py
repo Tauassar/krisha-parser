@@ -84,7 +84,6 @@ class RecordAdmin(
         'floor',
         'max_floor',
         'post_date',
-        'price',
         'krisha_created_at',
         'total_area',
         'description',
